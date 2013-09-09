@@ -1,6 +1,7 @@
 // File: topK.cpp
 // Author: Charles Guan
 // Last edit: 2013-09-08
+// ---------------------
 // Finds the top K integers of a given list
 // Input format: 
 // First line contains N , number of integers in list.
@@ -10,7 +11,6 @@
 // Note: In retrospect, a solution without a priority queue or with the Python
 // pqueue would have been much cleaner.
 
-// includes
 #include <cmath>
 #include <cstdio>
 #include <vector>

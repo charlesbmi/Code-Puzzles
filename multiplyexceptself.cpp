@@ -10,20 +10,33 @@
 // Output format:
 // New multiply-except-self list
 
-#include <cmath>
-#include <cstdio>
+#include <iostream>
 #include <vector>
-#include <algorithm>
-
-// constants
 
 // function prototypes
+int vectorProduct(std::vector<int> & vec);
 
 // main function
 
 int main()
 {
-
+    // read list
+    int N, i;
+    scanf("%d", &N);
+    std::vector<int> inputList(N);
+    for (i = 0; i < N; i++) std::cin >> inputList[i];
+    // compute new list by dividing vector product by each int in list
+    int product = vectorProduct(inputList);
+    for (i = 0; i < N; i++) std::cout << (product / inputList[i]) << std::endl;
     return 0;
 }
 
+// @desc    Computes the product of the elements in the vector
+// @param   vec     vector of elements to multiply
+// @return  product of elements
+int vectorProduct(std::vector<int> & vec)
+{
+    int product = 1;
+    for (int i = 0; i < vec.size(); i++) product *= vec[i];
+    return product;
+}

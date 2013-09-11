@@ -37,17 +37,14 @@ def max_profit(prices, num_prices):
     Returns:
         profit: computed profit attainable from optimal trading strategy.
     '''
-    stocks_owned = 0
     profit = 0
-    for i, price in enumerate(prices):
-        if (i == num_prices - 1) or (price > max(prices[i+1:])):
-            # Sell all stocks
-            profit += price * stocks_owned
-            stocks_owned = 0
-        else:
-            # Buy a stock
-            profit -= price
-            stocks_owned += 1
+    max_price = -1
+    # loop backwards for dynamic programming: 
+    for i in range(num_prices - 1, -1, -1):
+        if prices[i] > max_price:
+            # sell what you have (add margin for up to next max_price)
+            max_price = prices[i]
+        profit += max_price - prices[i] 
     return profit
 
 if __name__ == '__main__':

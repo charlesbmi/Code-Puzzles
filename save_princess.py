@@ -29,31 +29,24 @@ def display_path_to_princess(length, grid):
     '''Prints out the moves taken to get from the bot to the princess
     
     Args:
-        length: length of grid
+        length: odd integer, length of grid
         grid: a square grid of side-length length, containing an 'm' for bot
             and a 'p' for princess in one of the corners
     '''
-    princess_row, princess_col = find_princess(length, grid)
-    bot_row, bot_col = find_bot(length, grid)
-    row_diff = princess_row - bot_row
-    col_diff = princess_col - bot_col
-    row_move = 'RIGHT' if row_diff > 0 else 'LEFT'
-    col_move = 'DOWN' if col_diff > 0 else 'UP'
-    for row in range(abs(row_diff)):
+    row_move, col_move = find_princess(length, grid)
+    for row in range(int(length / 2)):
         print(row_move)
-    for col in range(abs(col_diff)):
         print(col_move)
 
 def find_princess(length, grid):
-    for (row, col) in [(0,0), (length-1,0), (0,length-1), (length-1,length-1)]:
-        if grid[row][col] == 'p':
-            return row, col
-
-def find_bot(length, grid):
-    for row in range(length):
-        for col in range(length):
-            if grid[row][col] == 'm':
-                return row, col
+    '''Returns the directions needed to get to the princess'''
+    if grid[0][0] == 'p':
+        return 'UP', 'LEFT'
+    if grid[0][length-1] == 'p':
+        return 'UP', 'RIGHT'
+    if grid[length-1][0] == 'p':
+        return 'DOWN', 'LEFT'
+    return 'DOWN', 'RIGHT'
 
 if __name__ == '__main__':
     main()

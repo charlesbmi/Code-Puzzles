@@ -1,6 +1,6 @@
 // File: circularbuffer.cc
 // Author: Charles Guan
-// Last Edit: 2013-09-11
+// Last Edit: 2013-09-14
 // ---------------------
 // Implements a circular buffer.
 //
@@ -20,49 +20,10 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
-// function prototypes
-void list_buffer(std::vector<std::string> & buffer, int start, int end);
-
-// main function
-int main() {
-    int buffer_size = 0;
-    scanf("%d", &buffer_size);
-    // Make buffer 1 element larger to allow modular arithmetic
-    int capacity = buffer_size + 1;
-    std::string *buffer = new std::string[capacity];
-     
-
-    int start = 0;
-
-    std::string line;
-    while (true)
-    {
-        scanf("%s", &line);
-        switch (line[0]) {
-            case 'A':
-                append_to_buffer();
-                break;
-            case 'R':
-                remove_from_buffer();
-                break;
-            case 'L':
-                list_buffer();
-                break;
-            default:
-                delete buffer;
-                return 0;
-    }
-}
-
-// Lists the contents of a buffer, from indices start up to and including end,
-// wrapping around to the front if necessary.
-void list_buffer(std::string buffer[], int capacity, int start, int end) {
-    for (int i = start; i != end; i = (i + 1) % capacity) {
-        printf("%s", buffer[i]);
-    }
-}
-
+// class prototypes
+class CircularBuffer;
 // Class: CircularBuffer
 // ---------------------
 // This class (TODO fill in)
@@ -76,6 +37,7 @@ public:
     ~CircularBuffer();
 
     void append(std::string value);
+    void append(int num_values = 1);
 
     void remove(int num_values = 1);
 
@@ -110,18 +72,28 @@ CircularBuffer::CircularBuffer(int capacity) {
 }
 
 CircularBuffer::~CircularBuffer() {
-    delete buffer;
+    delete[] buffer;
 }
 
 void CircularBuffer::append(std::string value) {
+    buffer[end] = value;
+    end = (end + 1) % capacity;
     if (count == capacity) {
+        start = (start + 1) % capacity;
     } else {
         count++;
     }
-    
 }
 
-void CircularBuffer::remove(int num_values = 1) {
+void CircularBuffer::append(int num_values) {
+    std::string value;
+    for (int i = 0; i < num_values; i++) {
+        std::getline(std::cin, value);
+        append(value);
+    }
+}
+
+void CircularBuffer::remove(int num_values) {
     // TODO: put an error message on throw
     if (num_values > count) throw;
     start = (start + num_values) % capacity;
@@ -130,12 +102,40 @@ void CircularBuffer::remove(int num_values = 1) {
 
 void CircularBuffer::list() {
     for (int i = 0; i < count; i++) {
-        printf("%s", buffer[(start + i) % capacity]);
+        std::cout << buffer[(start + i) % capacity] << std::endl;
     }
 }
 
 void CircularBuffer::clear() {
-    count = 0;
-    start = 0;
-    end = 0;
+    count = start = end = 0;
 }
+
+// main function
+int main() {
+    // Use getline instead of normal std::cin >> buffer_size to strip new-line
+    std::string buffer_size_str;
+    std::getline(std::cin, buffer_size_str);
+    int buffer_size = atoi(buffer_size_str.c_str());
+    CircularBuffer c_buffer(buffer_size); 
+    std::string command;
+    while (true)
+    {
+        std::getline(std::cin, command);
+        // number of values to append or remove
+        std::string num_values_str = command.substr(1);
+        switch (command[0]) {
+            case 'A':
+                c_buffer.append(atoi(num_values_str.c_str()));
+                break;
+            case 'R':
+                c_buffer.remove(atoi(num_values_str.c_str()));
+                break;
+            case 'L':
+                c_buffer.list();
+                break;
+            default:
+                return 0;
+        }
+    }
+}
+
